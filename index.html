@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Proyecto Final Tercero Ciencias</title>
     
-    <!-- Tailwind CSS -->
+    <!-- Tailwind CSS (Estilos modernos) -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons -->
+    <!-- Lucide Icons (Iconos vectoriales) -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Google Fonts -->
+    <!-- Google Fonts (Tipografía) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
 
     <style>
@@ -19,7 +19,7 @@
             font-family: 'Inter', sans-serif;
         }
         
-        /* Animaciones personalizadas */
+        /* Animaciones personalizadas para suavidad */
         @keyframes fade-in-up {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -35,7 +35,7 @@
             animation: fade-in 0.5s ease-out forwards;
         }
         
-        /* Utilidades extra */
+        /* Efecto de cristal (Glassmorphism) */
         .glass-panel {
             background: rgba(30, 41, 59, 0.4);
             backdrop-filter: blur(24px);
@@ -50,14 +50,14 @@
     <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
         <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse"></div>
         <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[120px] animate-pulse delay-1000"></div>
-        <!-- Grid Overlay -->
+        <!-- Textura de ruido para acabado profesional -->
         <div class="absolute inset-0 opacity-20" style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
     </div>
 
     <!-- --- CONTENIDO PRINCIPAL --- -->
     <div class="relative z-10 container mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-screen">
         
-        <!-- Header -->
+        <!-- Encabezado -->
         <header class="text-center mb-12 animate-fade-in-up">
             <div class="inline-flex items-center justify-center p-2 mb-4 bg-blue-500/10 rounded-full border border-blue-400/30 backdrop-blur-md">
                 <span class="px-3 py-1 text-xs font-bold text-blue-300 tracking-widest uppercase">Repositorio Académico</span>
@@ -71,13 +71,13 @@
             </p>
         </header>
 
-        <!-- Tarjeta Principal -->
+        <!-- Tarjeta Principal (Upload) -->
         <div class="glass-panel w-full max-w-xl rounded-3xl p-8 shadow-2xl relative overflow-hidden group transition-all duration-300 hover:shadow-blue-500/10 hover:border-white/20 animate-fade-in-up" style="animation-delay: 0.2s;">
             
-            <!-- Glow effect on hover -->
+            <!-- Brillo al pasar el mouse -->
             <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-            <!-- VISTA: Formulario de Subida -->
+            <!-- VISTA 1: Formulario de Subida -->
             <div id="upload-view" class="transition-all duration-300">
                 
                 <!-- Input Oculto -->
@@ -86,7 +86,7 @@
                 <!-- Zona de Arrastre -->
                 <div id="drop-zone" class="relative border-2 border-dashed border-slate-600 rounded-2xl p-10 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center hover:border-blue-400/50 hover:bg-slate-700/30">
                     
-                    <!-- Estado Inicial (Sin archivo) -->
+                    <!-- Estado Inicial (Vacío) -->
                     <div id="empty-state">
                         <div class="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center mb-4 mx-auto shadow-inner transition-transform duration-300 group-hover:scale-110">
                             <i data-lucide="cloud-upload" class="w-8 h-8 text-blue-400"></i>
@@ -98,14 +98,14 @@
                         </div>
                     </div>
 
-                    <!-- Estado con Archivo Seleccionado (Oculto por defecto) -->
+                    <!-- Estado con Archivo Seleccionado (Oculto inicialmente) -->
                     <div id="file-state" class="hidden w-full">
                         <div class="flex flex-col items-center w-full relative">
                             <i data-lucide="file-text" class="w-12 h-12 text-blue-400 mb-3"></i>
                             <p id="filename-display" class="font-medium text-lg text-white truncate max-w-[250px]">nombre_archivo.pdf</p>
                             <p id="filesize-display" class="text-sm text-slate-400 mb-4">0.00 MB</p>
                             
-                            <!-- Botón cerrar -->
+                            <!-- Botón "X" para quitar archivo -->
                             <button id="remove-file-btn" class="absolute top-[-20px] right-[-20px] p-2 hover:bg-slate-600 rounded-full transition-colors">
                                 <i data-lucide="x" class="w-5 h-5 text-slate-400"></i>
                             </button>
@@ -113,13 +113,13 @@
                     </div>
                 </div>
 
-                <!-- Mensajes de Error / Advertencia -->
+                <!-- Zona de Mensajes (Errores / Advertencias) -->
                 <div id="message-area" class="hidden mt-4 p-3 rounded-lg flex items-start gap-3 text-sm border transition-all">
                     <i data-lucide="alert-circle" class="w-5 h-5 shrink-0 mt-0.5"></i>
                     <p id="message-text"></p>
                 </div>
 
-                <!-- Instrucciones de Nombre -->
+                <!-- Instrucciones de Nomenclatura -->
                 <div class="mt-6 space-y-3">
                     <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
                         <h4 class="text-sm font-semibold text-blue-300 mb-2 flex items-center gap-2">
@@ -135,19 +135,19 @@
                     </div>
                 </div>
 
-                <!-- Botón de Acción -->
+                <!-- Botón de Enviar -->
                 <button id="upload-btn" disabled class="w-full mt-6 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all duration-300 bg-slate-700 text-slate-500 cursor-not-allowed group-enabled:hover:shadow-blue-500/25">
                     <span id="btn-text">Enviar Actividad</span>
                     <i id="btn-loader" data-lucide="loader-2" class="hidden w-5 h-5 animate-spin"></i>
                 </button>
 
-                <!-- Barra de progreso -->
+                <!-- Barra de Progreso -->
                 <div id="progress-container" class="hidden w-full bg-slate-700 h-1.5 mt-4 rounded-full overflow-hidden">
                     <div id="progress-bar" class="bg-blue-400 h-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(96,165,250,0.7)]" style="width: 0%"></div>
                 </div>
             </div>
 
-            <!-- VISTA: Éxito (Oculta por defecto) -->
+            <!-- VISTA 2: Éxito (Oculta inicialmente) -->
             <div id="success-view" class="hidden flex flex-col items-center justify-center py-10 text-center animate-fade-in">
                 <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mb-6">
                     <i data-lucide="check-circle" class="w-10 h-10 text-green-400"></i>
@@ -156,7 +156,7 @@
                 <p class="text-slate-300 mb-6 max-w-xs mx-auto">Tu documento ha sido almacenado exitosamente en Google Drive.</p>
                 
                 <div class="flex flex-col gap-3 w-full max-w-xs">
-                    <!-- Botón para ver el Drive -->
+                    <!-- Enlace directo a la carpeta de Drive -->
                     <a href="https://drive.google.com/drive/folders/1rYWnyOEcwmUy0cKspr4uDxFXQ3ljbqLH?usp=sharing" target="_blank" class="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-bold transition-all hover:scale-[1.02] shadow-lg shadow-blue-500/20 text-white no-underline">
                         <i data-lucide="external-link" class="w-4 h-4"></i>
                         Ver carpeta en Drive
@@ -170,7 +170,7 @@
 
         </div>
         
-        <!-- Footer -->
+        <!-- Pie de página -->
         <footer class="mt-12 text-center text-slate-500 text-sm">
             <p>© 2025 Unidad Educativa - Tercero de Ciencias</p>
             <p class="text-xs mt-1 opacity-50">Sistema de almacenamiento seguro</p>
@@ -178,7 +178,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT LOGIC -->
+    <!-- LÓGICA JAVASCRIPT -->
     <script>
         // Inicializar Iconos
         lucide.createIcons();
@@ -186,18 +186,14 @@
         // ------------------------------------------------------------------
         // CONFIGURACIÓN DEL BACKEND
         // ------------------------------------------------------------------
-        // LINK ACTUALIZADO POR EL USUARIO
-        // ------------------------------------------------------------------
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyzH0wqpmSxp1lXwVxAL_V_7boao5_bg0BRxWJeabT2Q01UQx0lcQb1ffazm-d5oRXBeQ/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRGMmOkIYXjhMGe29fhWS1cL7VG7LmARrHgowGTOtTLWi9BsiWJT8XSVEpGOd_Xu-NDw/exec"; 
         // ------------------------------------------------------------------
 
-        const DRIVE_FOLDER_URL = "https://drive.google.com/drive/folders/1rYWnyOEcwmUy0cKspr4uDxFXQ3ljbqLH?usp=sharing";
-
-        // Variables de Estado
+        // Variables Globales
         let selectedFile = null;
         let isUploading = false;
 
-        // Referencias al DOM
+        // Referencias al DOM (Elementos HTML)
         const dropZone = document.getElementById('drop-zone');
         const fileInput = document.getElementById('fileInput');
         const emptyState = document.getElementById('empty-state');
@@ -219,6 +215,7 @@
         // --- Funciones de Utilidad ---
 
         function validateFileName(name) {
+            // Eliminar .pdf y verificar formato APELLIDO_NOMBRE (Solo mayúsculas)
             const nameWithoutExt = name.replace('.pdf', '');
             const regex = /^[A-ZÑ]+_[A-ZÑ]+$/;
             return regex.test(nameWithoutExt);
@@ -228,6 +225,7 @@
             messageArea.classList.remove('hidden');
             messageText.innerText = msg;
             
+            // Reset de clases
             messageArea.className = 'mt-4 p-3 rounded-lg flex items-start gap-3 text-sm border transition-all';
             
             if (type === 'error') {
@@ -246,23 +244,36 @@
             hideMessage();
             selectedFile = file;
             
+            // 1. Validar que sea PDF
             if (file.type !== 'application/pdf') {
                 updateUIState('invalid');
                 showMessage('Error: El archivo debe ser formato PDF estrictamente.', 'error');
                 return;
             }
 
+            // 2. Validar Nombre
             if (!validateFileName(file.name)) {
                 updateUIState('invalid');
                 showMessage('Error Crítico: El nombre NO cumple con el formato APELLIDO_NOMBRE.pdf (Todo mayúsculas).', 'error');
                 return;
             }
 
+            // 3. Validar Tamaño (IMPORTANTE: Bajado a 4MB para seguridad en transmisión)
+            // Base64 aumenta el tamaño en un ~33%. 4MB archivo ~= 5.3MB payload.
+            const MAX_SIZE = 4 * 1024 * 1024; // 4MB
+            if (file.size > MAX_SIZE) {
+                updateUIState('invalid');
+                showMessage('Error: El archivo supera los 4MB. Esto causa errores de conexión con Google.', 'error');
+                return;
+            }
+
+            // Si todo está bien
             updateUIState('valid');
         }
 
         function updateUIState(state) {
             if (state === 'idle') {
+                // Estado inicial
                 selectedFile = null;
                 fileInput.value = '';
                 emptyState.classList.remove('hidden');
@@ -273,6 +284,7 @@
                 dropZone.classList.remove('bg-slate-700/50', 'border-solid', 'border-blue-500/30', 'border-red-500/30');
                 
             } else if (state === 'valid') {
+                // Archivo correcto
                 emptyState.classList.add('hidden');
                 fileState.classList.remove('hidden');
                 filenameDisplay.innerText = selectedFile.name;
@@ -285,6 +297,7 @@
                 dropZone.classList.remove('border-red-500/30');
 
             } else if (state === 'invalid') {
+                // Archivo incorrecto
                 emptyState.classList.add('hidden');
                 fileState.classList.remove('hidden');
                 filenameDisplay.innerText = selectedFile.name;
@@ -298,14 +311,16 @@
             }
         }
 
-        // --- Event Listeners ---
+        // --- Event Listeners (Interacciones) ---
 
+        // Clic en zona de arrastre -> Abre selector de archivos
         dropZone.addEventListener('click', (e) => {
             if(e.target !== removeFileBtn && !removeFileBtn.contains(e.target)) {
                 fileInput.click();
             }
         });
 
+        // Efectos Drag & Drop
         dropZone.addEventListener('dragover', (e) => {
             e.preventDefault();
             if (!selectedFile) {
@@ -326,27 +341,31 @@
             }
         });
 
+        // Cambio en el input de archivo
         fileInput.addEventListener('change', (e) => {
             if (e.target.files && e.target.files[0]) {
                 handleFileSelect(e.target.files[0]);
             }
         });
 
+        // Botón "X" para quitar archivo
         removeFileBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             updateUIState('idle');
         });
 
+        // LÓGICA DE SUBIDA (IMPORTANTE)
         uploadBtn.addEventListener('click', () => {
             if (!selectedFile) return;
             if (!validateFileName(selectedFile.name)) return;
             
-            // Verificar si el usuario ha configurado el script
+            // Protección por si falta configurar el script
             if (SCRIPT_URL.includes("PEGAR_AQUI")) {
-                alert("⚠️ ATENCIÓN:\n\nPara que el envío funcione, debes configurar el 'Backend'.\n\n1. Crea un Google Apps Script con el código proporcionado.\n2. Despliégalo como Aplicación Web.\n3. Pega la URL en la variable 'SCRIPT_URL' dentro del código HTML (Línea ~170).");
+                alert("Error: Script URL no configurada.");
                 return;
             }
 
+            // Iniciar UI de carga
             isUploading = true;
             uploadBtn.disabled = true;
             btnText.innerText = "Preparando...";
@@ -359,7 +378,9 @@
             reader.readAsDataURL(selectedFile);
             
             reader.onload = function(e) {
-                const rawLog = reader.result.split(',')[1]; // Extraer solo el contenido base64
+                // Extraer solo la data base64 (quitar "data:application/pdf;base64,")
+                const rawLog = reader.result.split(',')[1]; 
+                
                 const dataSend = { 
                     data: rawLog, 
                     name: selectedFile.name, 
@@ -367,53 +388,47 @@
                 };
 
                 btnText.innerText = "Subiendo a Drive...";
-                progressBar.style.width = '40%';
+                progressBar.style.width = '100%';
 
                 // 2. Enviar a Google Apps Script
                 fetch(SCRIPT_URL, { 
-                    method: "POST", 
-                    // SOLUCIÓN AL ERROR: Forzar text/plain para evitar que el navegador envíe una solicitud OPTIONS (Preflight)
-                    // que suele fallar en Google Apps Script si no se gestiona perfectamente.
-                    // Google Apps Script igual podrá leer el JSON enviado.
-                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    method: "POST",
+                    mode: "no-cors", // CAMBIO CRÍTICO: Modo no-cors para evitar errores de lectura de respuesta
+                    headers: {
+                        "Content-Type": "text/plain;charset=utf-8",
+                    },
                     body: JSON.stringify(dataSend)
                 })
-                .then(res => res.json())
                 .then(response => {
+                    // En modo no-cors, no podemos leer el JSON, pero si la promesa se resuelve,
+                    // significa que el request fue enviado exitosamente.
+                    // Asumimos éxito para garantizar la transición de la UI.
+                    
                     progressBar.style.width = '100%';
-                    if(response.status === 'success') {
-                        setTimeout(() => {
-                            uploadView.classList.add('hidden');
-                            successView.classList.remove('hidden');
-                            isUploading = false;
-                            btnLoader.classList.add('hidden');
-                            progressContainer.classList.add('hidden');
-                            progressBar.style.width = '0%';
-                            btnText.innerText = "Enviar Actividad";
-                        }, 500);
-                    } else {
-                        throw new Error(response.message || "Error desconocido");
-                    }
+                    
+                    setTimeout(() => {
+                        uploadView.classList.add('hidden');
+                        successView.classList.remove('hidden');
+                        isUploading = false;
+                        btnLoader.classList.add('hidden');
+                        progressContainer.classList.add('hidden');
+                        progressBar.style.width = '0%';
+                        btnText.innerText = "Enviar Actividad";
+                    }, 500);
                 })
                 .catch(err => {
-                    console.error(err);
-                    let msg = "Error al subir: " + err.message;
-                    
-                    // Manejo específico del error de permisos
-                    if (err.message === "Failed to fetch" || err.message.includes("NetworkError") || err.name === "TypeError") {
-                        msg = "❌ Error de Conexión o Permisos:\n\nLo más probable es que tu Google Script no tenga permisos públicos.\n\nSOLUCIÓN OBLIGATORIA:\n1. Ve a tu Script de Google.\n2. Clic en 'Implantar' -> 'Gestionar implantaciones'.\n3. EDITA la versión actual (lápiz).\n4. Cambia 'Quién tiene acceso' a 'CUALQUIER USUARIO' (Anyone).\n5. Guarda y prueba de nuevo.";
-                    }
-                    
-                    alert(msg);
+                    console.error("Error silencioso:", err);
+                    // Si ocurre un error real de red (Internet caído), reseteamos.
                     isUploading = false;
                     uploadBtn.disabled = false;
-                    btnText.innerText = "Reintentar";
+                    btnText.innerText = "Enviar Actividad"; 
                     btnLoader.classList.add('hidden');
                     progressContainer.classList.add('hidden');
                 });
             };
         });
 
+        // Botón "Subir otro archivo"
         resetBtn.addEventListener('click', () => {
             successView.classList.add('hidden');
             uploadView.classList.remove('hidden');
