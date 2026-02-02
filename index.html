@@ -3,437 +3,586 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Proyecto Final Tercero Ciencias</title>
+    <title>Aula Virtual - Bases de Datos</title>
     
-    <!-- Tailwind CSS (Estilos modernos) -->
+    <!-- NOTA: Usamos Tailwind CSS para un diseño rápido, responsivo y profesional sin escribir cientos de líneas de CSS manual. -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Lucide Icons (Iconos vectoriales) -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
-    <!-- Google Fonts (Tipografía) -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- NOTA: Fuente 'Inter' para mejorar la legibilidad en pantallas, crucial para entornos educativos. -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- NOTA: FontAwesome para los iconos. Los iconos ayudan a identificar secciones visualmente más rápido que el texto. -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
+        body { font-family: 'Inter', sans-serif; }
+        
+        /* NOTA: Animación suave para cuando cambiamos de tema. Esto reduce la carga cognitiva del cambio brusco. */
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
         }
         
-        /* Animaciones personalizadas para suavidad */
-        @keyframes fade-in-up {
-            from { opacity: 0; transform: translateY(20px); }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes fade-in {
-            from { opacity: 0; }
-            to { opacity: 1; }
-        }
-        .animate-fade-in-up {
-            animation: fade-in-up 0.8s ease-out forwards;
-        }
-        .animate-fade-in {
-            animation: fade-in 0.5s ease-out forwards;
-        }
-        
-        /* Efecto de cristal (Glassmorphism) */
-        .glass-panel {
-            background: rgba(30, 41, 59, 0.4);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+
+        /* Estilos para el scrollbar personalizado (más elegante) */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        .active-nav {
+            background-color: #2563eb; /* Azul brillante para indicar selección */
+            color: white;
+            border-right: 4px solid #60a5fa;
         }
     </style>
 </head>
-<body class="bg-slate-900 text-white min-h-screen selection:bg-blue-500 selection:text-white overflow-x-hidden relative">
+<body class="bg-slate-50 text-slate-800 h-screen flex flex-col overflow-hidden">
 
-    <!-- --- FONDO ANIMADO --- -->
-    <div class="fixed inset-0 z-0 overflow-hidden pointer-events-none">
-        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-600/20 rounded-full blur-[120px] animate-pulse"></div>
-        <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-500/10 rounded-full blur-[120px] animate-pulse delay-1000"></div>
-        <!-- Textura de ruido para acabado profesional -->
-        <div class="absolute inset-0 opacity-20" style="background-image: url('https://grainy-gradients.vercel.app/noise.svg');"></div>
-    </div>
-
-    <!-- --- CONTENIDO PRINCIPAL --- -->
-    <div class="relative z-10 container mx-auto px-4 py-12 flex flex-col items-center justify-center min-h-screen">
-        
-        <!-- Encabezado -->
-        <header class="text-center mb-12 animate-fade-in-up">
-            <div class="inline-flex items-center justify-center p-2 mb-4 bg-blue-500/10 rounded-full border border-blue-400/30 backdrop-blur-md">
-                <span class="px-3 py-1 text-xs font-bold text-blue-300 tracking-widest uppercase">Repositorio Académico</span>
-            </div>
-            <h1 class="text-4xl md:text-6xl font-extrabold tracking-tight mb-4 bg-gradient-to-r from-blue-200 via-white to-blue-200 bg-clip-text text-transparent drop-shadow-lg leading-tight">
-                Proyecto Final <br/> Tercero Ciencias
-            </h1>
-            <p class="text-blue-200/70 text-lg max-w-2xl mx-auto font-light">
-                Plataforma oficial de recepción de documentos. <br/>
-                Asegúrate de cumplir con los lineamientos antes de enviar.
-            </p>
-        </header>
-
-        <!-- Tarjeta Principal (Upload) -->
-        <div class="glass-panel w-full max-w-xl rounded-3xl p-8 shadow-2xl relative overflow-hidden group transition-all duration-300 hover:shadow-blue-500/10 hover:border-white/20 animate-fade-in-up" style="animation-delay: 0.2s;">
-            
-            <!-- Brillo al pasar el mouse -->
-            <div class="absolute inset-0 bg-gradient-to-tr from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
-
-            <!-- VISTA 1: Formulario de Subida -->
-            <div id="upload-view" class="transition-all duration-300">
-                
-                <!-- Input Oculto -->
-                <input type="file" id="fileInput" class="hidden" accept=".pdf">
-
-                <!-- Zona de Arrastre -->
-                <div id="drop-zone" class="relative border-2 border-dashed border-slate-600 rounded-2xl p-10 text-center cursor-pointer transition-all duration-300 flex flex-col items-center justify-center hover:border-blue-400/50 hover:bg-slate-700/30">
-                    
-                    <!-- Estado Inicial (Vacío) -->
-                    <div id="empty-state">
-                        <div class="w-16 h-16 bg-slate-700 rounded-full flex items-center justify-center mb-4 mx-auto shadow-inner transition-transform duration-300 group-hover:scale-110">
-                            <i data-lucide="cloud-upload" class="w-8 h-8 text-blue-400"></i>
-                        </div>
-                        <h3 class="text-lg font-semibold text-white mb-1">Arrastra tu PDF aquí</h3>
-                        <p class="text-sm text-slate-400">o haz clic para explorar tus archivos</p>
-                        <div class="mt-4 px-3 py-1 bg-slate-800 rounded inline-block text-xs text-slate-500 font-mono border border-slate-700">
-                            Formato: .PDF
-                        </div>
-                    </div>
-
-                    <!-- Estado con Archivo Seleccionado (Oculto inicialmente) -->
-                    <div id="file-state" class="hidden w-full">
-                        <div class="flex flex-col items-center w-full relative">
-                            <i data-lucide="file-text" class="w-12 h-12 text-blue-400 mb-3"></i>
-                            <p id="filename-display" class="font-medium text-lg text-white truncate max-w-[250px]">nombre_archivo.pdf</p>
-                            <p id="filesize-display" class="text-sm text-slate-400 mb-4">0.00 MB</p>
-                            
-                            <!-- Botón "X" para quitar archivo -->
-                            <button id="remove-file-btn" class="absolute top-[-20px] right-[-20px] p-2 hover:bg-slate-600 rounded-full transition-colors">
-                                <i data-lucide="x" class="w-5 h-5 text-slate-400"></i>
-                            </button>
-                        </div>
-                    </div>
+    <!-- 
+      ========================================
+      ENCABEZADO (HEADER)
+      ========================================
+      NOTA: El header es fijo y contiene la identidad institucional. 
+      Se usa Flexbox para separar los elementos a los extremos (justify-between).
+    -->
+    <header class="bg-slate-900 text-white shadow-lg z-20 h-20 flex-shrink-0">
+        <div class="container mx-auto px-6 h-full flex items-center justify-between">
+            <!-- Izquierda: Logo y Universidad -->
+            <div class="flex items-center gap-4">
+                <div class="bg-white p-2 rounded-full w-12 h-12 flex items-center justify-center text-slate-900 font-bold text-xl">
+                    <i class="fa-solid fa-university"></i>
                 </div>
-
-                <!-- Zona de Mensajes (Errores / Advertencias) -->
-                <div id="message-area" class="hidden mt-4 p-3 rounded-lg flex items-start gap-3 text-sm border transition-all">
-                    <i data-lucide="alert-circle" class="w-5 h-5 shrink-0 mt-0.5"></i>
-                    <p id="message-text"></p>
-                </div>
-
-                <!-- Instrucciones de Nomenclatura -->
-                <div class="mt-6 space-y-3">
-                    <div class="bg-slate-900/50 p-4 rounded-xl border border-slate-700/50">
-                        <h4 class="text-sm font-semibold text-blue-300 mb-2 flex items-center gap-2">
-                            <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                            Requisito de Nomenclatura
-                        </h4>
-                        <p class="text-sm text-slate-400 leading-relaxed">
-                            El archivo debe nombrarse estrictamente con tu apellido y nombre en mayúsculas.
-                        </p>
-                        <div class="mt-2 bg-black/30 p-2 rounded border border-dashed border-slate-600 text-center">
-                            <code class="text-sm font-mono text-green-400">JORDAN_ROMAN.pdf</code>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Botón de Enviar -->
-                <button id="upload-btn" disabled class="w-full mt-6 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all duration-300 bg-slate-700 text-slate-500 cursor-not-allowed group-enabled:hover:shadow-blue-500/25">
-                    <span id="btn-text">Enviar Actividad</span>
-                    <i id="btn-loader" data-lucide="loader-2" class="hidden w-5 h-5 animate-spin"></i>
-                </button>
-
-                <!-- Barra de Progreso -->
-                <div id="progress-container" class="hidden w-full bg-slate-700 h-1.5 mt-4 rounded-full overflow-hidden">
-                    <div id="progress-bar" class="bg-blue-400 h-full transition-all duration-300 ease-out shadow-[0_0_10px_rgba(96,165,250,0.7)]" style="width: 0%"></div>
+                <div>
+                    <h1 class="text-lg font-bold leading-tight">Universidad Nacional de Loja</h1>
+                    <p class="text-xs text-slate-400 uppercase tracking-wider">Excelencia Académica</p>
                 </div>
             </div>
 
-            <!-- VISTA 2: Éxito (Oculta inicialmente) -->
-            <div id="success-view" class="hidden flex flex-col items-center justify-center py-10 text-center animate-fade-in">
-                <div class="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mb-6">
-                    <i data-lucide="check-circle" class="w-10 h-10 text-green-400"></i>
-                </div>
-                <h3 class="text-2xl font-bold text-white mb-2">¡Envío Completado!</h3>
-                <p class="text-slate-300 mb-6 max-w-xs mx-auto">Tu documento ha sido almacenado exitosamente en Google Drive.</p>
-                
-                <div class="flex flex-col gap-3 w-full max-w-xs">
-                    <!-- Enlace directo a la carpeta de Drive -->
-                    <a href="https://drive.google.com/drive/folders/1rYWnyOEcwmUy0cKspr4uDxFXQ3ljbqLH?usp=sharing" target="_blank" class="flex items-center justify-center gap-2 px-6 py-3 bg-blue-600 hover:bg-blue-500 rounded-lg text-sm font-bold transition-all hover:scale-[1.02] shadow-lg shadow-blue-500/20 text-white no-underline">
-                        <i data-lucide="external-link" class="w-4 h-4"></i>
-                        Ver carpeta en Drive
-                    </a>
-                    
-                    <button id="reset-btn" class="px-6 py-3 bg-slate-700 hover:bg-slate-600 rounded-lg text-sm font-medium transition-colors border border-white/5 text-white">
-                        Subir otro archivo
-                    </button>
-                </div>
+            <!-- Derecha: Unidad Académica -->
+            <div class="text-right hidden md:block">
+                <h2 class="text-sm font-semibold text-blue-300">Unidad de Educación a Distancia y en Línea</h2>
+                <p class="text-xs text-slate-400">Aula Virtual: Bases de Datos I</p>
             </div>
-
         </div>
-        
-        <!-- Pie de página -->
-        <footer class="mt-12 text-center text-slate-500 text-sm">
-            <p>© 2025 Unidad Educativa - Tercero de Ciencias</p>
-            <p class="text-xs mt-1 opacity-50">Sistema de almacenamiento seguro</p>
-        </footer>
+    </header>
 
+    <!-- 
+      ========================================
+      CONTENEDOR CENTRAL (LAYOUT PRINCIPAL)
+      ========================================
+      NOTA: Usamos 'flex' para poner la barra lateral (aside) junto al contenido (main).
+      'h-full' asegura que ocupe todo el alto restante.
+    -->
+    <div class="flex flex-1 overflow-hidden">
+        
+        <!-- 
+          BARRA LATERAL (SIDEBAR/NAVEGACIÓN)
+          NOTA: Aquí van los temas. Es vital que sea escaneable visualmente.
+          Usamos un color oscuro (slate-800) para contraste con el contenido claro.
+        -->
+        <aside class="w-72 bg-slate-800 text-slate-300 flex-shrink-0 overflow-y-auto hidden md:block border-r border-slate-700">
+            <div class="p-6">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-4">Temario del Curso</h3>
+                <nav class="space-y-1">
+                    <!-- Los botones llaman a la función javascript 'loadContent' -->
+                    <button onclick="loadContent('inicio')" id="btn-inicio" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-3 active-nav">
+                        <i class="fa-solid fa-house w-5"></i> Inicio
+                    </button>
+                    
+                    <button onclick="loadContent('fundamentos')" id="btn-fundamentos" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <i class="fa-solid fa-database w-5"></i> Fundamentos
+                    </button>
+
+                    <button onclick="loadContent('software-libre')" id="btn-software-libre" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <i class="fa-brands fa-linux w-5"></i> BD Software Libre
+                    </button>
+
+                    <button onclick="loadContent('software-paga')" id="btn-software-paga" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <i class="fa-brands fa-microsoft w-5"></i> BD Software Paga
+                    </button>
+
+                    <button onclick="loadContent('no-relacionales')" id="btn-no-relacionales" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <i class="fa-solid fa-leaf w-5"></i> No Relacionales
+                    </button>
+
+                    <button onclick="loadContent('relacionales')" id="btn-relacionales" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <i class="fa-solid fa-table w-5"></i> Relacionales (SQL)
+                    </button>
+
+                    <button onclick="loadContent('normalizacion')" id="btn-normalizacion" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <i class="fa-solid fa-arrow-down-short-wide w-5"></i> Normalización
+                    </button>
+
+                    <button onclick="loadContent('seguridad')" id="btn-seguridad" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-slate-700 transition-colors flex items-center gap-3">
+                        <i class="fa-solid fa-shield-halved w-5"></i> Seguridad
+                    </button>
+
+                    <div class="my-4 border-t border-slate-700"></div>
+
+                    <button onclick="loadContent('evaluacion')" id="btn-evaluacion" class="nav-item w-full text-left px-4 py-3 rounded-lg hover:bg-red-900/50 hover:text-red-200 text-red-300 transition-colors flex items-center gap-3 font-semibold">
+                        <i class="fa-solid fa-clipboard-check w-5"></i> Evaluación Final
+                    </button>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- 
+          ÁREA DE CONTENIDO (MAIN)
+          NOTA: Aquí se inyectará dinámicamente el contenido de cada lección.
+          El fondo es claro para facilitar la lectura prolongada.
+        -->
+        <main class="flex-1 overflow-y-auto bg-slate-50 relative">
+            <!-- Botón móvil para menú (solo visible en pantallas pequeñas) -->
+            <button class="md:hidden absolute top-4 left-4 z-50 bg-blue-600 text-white p-2 rounded shadow" onclick="toggleMobileMenu()">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <div class="max-w-4xl mx-auto p-8 md:p-12 pb-24" id="content-area">
+                <!-- El contenido se carga aquí mediante JS -->
+            </div>
+        </main>
     </div>
 
-    <!-- LÓGICA JAVASCRIPT -->
+    <!-- 
+      ========================================
+      PIE DE PÁGINA (FOOTER)
+      ========================================
+      NOTA: Información legal y créditos. Mantenemos el estilo oscuro del header para cerrar visualmente la página.
+    -->
+    <footer class="bg-slate-900 text-slate-400 text-sm py-4 border-t border-slate-800">
+        <div class="container mx-auto px-6 flex justify-between items-center">
+            <p>&copy; 2024 Universidad Nacional de Loja. Todos los derechos reservados.</p>
+            <div class="flex gap-4">
+                <a href="#" class="hover:text-white transition-colors">Soporte</a>
+                <a href="#" class="hover:text-white transition-colors">Política de Privacidad</a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- 
+      ========================================
+      LÓGICA JAVASCRIPT
+      ========================================
+    -->
     <script>
-        // Inicializar Iconos
-        lucide.createIcons();
+        // BASE DE DATOS DE CONTENIDO (Simulación)
+        // NOTA: Guardamos el contenido en objetos para simular una base de datos real.
+        // Esto permite cambiar el contenido instantáneamente sin recargar la página.
+        const courseData = {
+            'inicio': {
+                title: "Bienvenido al Módulo de Bases de Datos",
+                subtitle: "Introducción al curso",
+                icon: "fa-house",
+                color: "text-blue-600",
+                html: `
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 fade-in">
+                        <img src="https://images.unsplash.com/photo-1544383835-bda2bc66a55d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" alt="Aula Virtual" class="w-full h-64 object-cover rounded-lg mb-6">
+                        <p class="text-lg text-slate-600 mb-4">
+                            Bienvenido, estudiante. Este entorno virtual ha sido diseñado para guiarte a través de los conceptos fundamentales y avanzados del diseño y gestión de bases de datos.
+                        </p>
+                        <h3 class="text-xl font-bold text-slate-800 mb-2">Objetivos de Aprendizaje:</h3>
+                        <ul class="list-disc pl-5 space-y-2 text-slate-600 mb-6">
+                            <li>Comprender la diferencia entre datos e información.</li>
+                            <li>Diferenciar entre modelos relacionales y NoSQL.</li>
+                            <li>Diseñar esquemas normalizados y eficientes.</li>
+                            <li>Aplicar principios básicos de seguridad.</li>
+                        </ul>
+                        <div class="bg-blue-50 border-l-4 border-blue-500 p-4">
+                            <p class="text-blue-700 font-medium">Instrucción: Utiliza el menú lateral para navegar por los temas en orden secuencial.</p>
+                        </div>
+                    </div>
+                `
+            },
+            'fundamentos': {
+                title: "Fundamentos de Base de Datos",
+                subtitle: "Conceptos Básicos",
+                icon: "fa-database",
+                color: "text-indigo-600",
+                html: `
+                    <div class="space-y-6 fade-in">
+                        <div class="bg-white p-6 rounded-xl shadow-sm border border-slate-200">
+                            <h3 class="text-xl font-bold mb-3">¿Qué es una Base de Datos?</h3>
+                            <p class="text-slate-600 mb-4">Una base de datos es una recopilación organizada de información o datos estructurados, que normalmente se almacena de forma electrónica en un sistema informático.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+                                <div class="bg-slate-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-slate-800"><i class="fa-solid fa-table me-2"></i>Dato</h4>
+                                    <p class="text-sm text-slate-500">Unidad mínima (ej: "25", "Juan"). Por sí solo no tiene significado.</p>
+                                </div>
+                                <div class="bg-slate-50 p-4 rounded-lg">
+                                    <h4 class="font-bold text-slate-800"><i class="fa-solid fa-circle-info me-2"></i>Información</h4>
+                                    <p class="text-sm text-slate-500">Conjunto de datos procesados con contexto (ej: "Juan tiene 25 años").</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'software-libre': {
+                title: "Bases de Datos de Software Libre",
+                subtitle: "Open Source",
+                icon: "fa-brands fa-linux",
+                color: "text-green-600",
+                html: `
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 fade-in">
+                        <p class="mb-6 text-slate-600">El software libre permite a los usuarios estudiar, modificar y mejorar el software. En bases de datos, esto reduce costos de licencia significativamente.</p>
+                        
+                        <div class="grid gap-6 md:grid-cols-2">
+                            <div class="border rounded-lg p-5 hover:shadow-md transition-shadow">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold"><i class="fa-solid fa-dolphin"></i></div>
+                                    <h4 class="font-bold text-lg">MySQL</h4>
+                                </div>
+                                <p class="text-sm text-slate-500">La base de datos de código abierto más popular del mundo. Ideal para aplicaciones web.</p>
+                            </div>
+                            <div class="border rounded-lg p-5 hover:shadow-md transition-shadow">
+                                <div class="flex items-center gap-3 mb-3">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center text-blue-600 font-bold"><i class="fa-solid fa-elephant"></i></div>
+                                    <h4 class="font-bold text-lg">PostgreSQL</h4>
+                                </div>
+                                <p class="text-sm text-slate-500">Conocida por su robustez y cumplimiento de estándares SQL. Muy potente para analítica.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'software-paga': {
+                title: "Bases de Datos Comerciales",
+                subtitle: "Licencias y Soporte Enterprise",
+                icon: "fa-brands fa-microsoft",
+                color: "text-purple-600",
+                html: `
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 fade-in">
+                        <div class="flex items-start gap-4 mb-6">
+                            <div class="p-3 bg-purple-100 text-purple-600 rounded-lg">
+                                <i class="fa-solid fa-money-bill-wave text-2xl"></i>
+                            </div>
+                            <div>
+                                <h3 class="font-bold text-lg">¿Por qué pagar?</h3>
+                                <p class="text-slate-600">Las bases de datos comerciales ofrecen soporte técnico dedicado, herramientas avanzadas de administración y optimización extrema para grandes corporaciones.</p>
+                            </div>
+                        </div>
+                        <ul class="space-y-3">
+                            <li class="flex items-center gap-2 p-3 bg-slate-50 rounded">
+                                <i class="fa-brands fa-oracle text-red-600"></i>
+                                <span class="font-semibold">Oracle Database:</span> Líder en el mercado corporativo.
+                            </li>
+                            <li class="flex items-center gap-2 p-3 bg-slate-50 rounded">
+                                <i class="fa-brands fa-microsoft text-blue-600"></i>
+                                <span class="font-semibold">Microsoft SQL Server:</span> Integración nativa con ecosistema Windows y Azure.
+                            </li>
+                        </ul>
+                    </div>
+                `
+            },
+            'no-relacionales': {
+                title: "Bases de Datos No Relacionales",
+                subtitle: "NoSQL",
+                icon: "fa-solid fa-leaf",
+                color: "text-green-500",
+                html: `
+                     <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 fade-in">
+                        <h3 class="text-xl font-bold mb-4">Más allá de las tablas</h3>
+                        <p class="text-slate-600 mb-6">NoSQL (Not Only SQL) son bases de datos diseñadas para modelos de datos específicos y tienen esquemas flexibles. Son ideales para Big Data y aplicaciones en tiempo real.</p>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                            <div class="bg-green-50 p-4 rounded text-center">
+                                <i class="fa-solid fa-file-code text-3xl text-green-600 mb-2"></i>
+                                <h4 class="font-bold">Documentales</h4>
+                                <p class="text-xs">MongoDB</p>
+                            </div>
+                            <div class="bg-yellow-50 p-4 rounded text-center">
+                                <i class="fa-solid fa-key text-3xl text-yellow-600 mb-2"></i>
+                                <h4 class="font-bold">Clave-Valor</h4>
+                                <p class="text-xs">Redis</p>
+                            </div>
+                            <div class="bg-blue-50 p-4 rounded text-center">
+                                <i class="fa-solid fa-diagram-project text-3xl text-blue-600 mb-2"></i>
+                                <h4 class="font-bold">Grafos</h4>
+                                <p class="text-xs">Neo4j</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'relacionales': {
+                title: "Bases de Datos Relacionales",
+                subtitle: "El Modelo RDBMS",
+                icon: "fa-solid fa-table",
+                color: "text-blue-700",
+                html: `
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 fade-in">
+                        <p class="text-slate-600 mb-4">Basadas en el modelo relacional, organizan los datos en tablas (filas y columnas). Utilizan SQL (Structured Query Language) para su gestión.</p>
+                        
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full text-sm border border-slate-200">
+                                <thead class="bg-slate-100">
+                                    <tr>
+                                        <th class="p-3 text-left">ID</th>
+                                        <th class="p-3 text-left">Nombre</th>
+                                        <th class="p-3 text-left">Carrera</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-t">
+                                        <td class="p-3">001</td>
+                                        <td class="p-3">Ana López</td>
+                                        <td class="p-3">Sistemas</td>
+                                    </tr>
+                                    <tr class="border-t">
+                                        <td class="p-3">002</td>
+                                        <td class="p-3">Carlos Ruiz</td>
+                                        <td class="p-3">Derecho</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-xs text-center text-slate-400 mt-2">Ejemplo visual de una tabla relacional</p>
+                    </div>
+                `
+            },
+            'normalizacion': {
+                title: "Normalización",
+                subtitle: "Optimizando la Estructura",
+                icon: "fa-solid fa-arrow-down-short-wide",
+                color: "text-teal-600",
+                html: `
+                     <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 fade-in">
+                        <h3 class="font-bold text-lg mb-2">Objetivo: Reducir la Redundancia</h3>
+                        <p class="text-slate-600 mb-6">La normalización es el proceso de organizar los datos para minimizar la redundancia (duplicados) y evitar anomalías en la inserción, actualización y borrado.</p>
+                        
+                        <div class="space-y-4">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold">1FN</div>
+                                <div>
+                                    <p class="font-semibold">Primera Forma Normal</p>
+                                    <p class="text-xs text-slate-500">Eliminar grupos repetitivos, atomicidad.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold">2FN</div>
+                                <div>
+                                    <p class="font-semibold">Segunda Forma Normal</p>
+                                    <p class="text-xs text-slate-500">Dependencia funcional completa.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-full bg-slate-200 flex items-center justify-center font-bold">3FN</div>
+                                <div>
+                                    <p class="font-semibold">Tercera Forma Normal</p>
+                                    <p class="text-xs text-slate-500">Eliminar dependencias transitivas.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'seguridad': {
+                title: "Seguridad en Base de Datos",
+                subtitle: "Protección de la Información",
+                icon: "fa-solid fa-shield-halved",
+                color: "text-red-600",
+                html: `
+                     <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 fade-in">
+                        <div class="grid md:grid-cols-2 gap-8">
+                            <div>
+                                <h3 class="font-bold text-lg mb-3">La Triada CID</h3>
+                                <ul class="list-disc pl-5 space-y-2 text-slate-600">
+                                    <li><strong>Confidencialidad:</strong> Solo usuarios autorizados acceden.</li>
+                                    <li><strong>Integridad:</strong> Los datos no son alterados indebidamente.</li>
+                                    <li><strong>Disponibilidad:</strong> Los datos están accesibles cuando se necesitan.</li>
+                                </ul>
+                            </div>
+                            <div class="bg-red-50 p-4 rounded border border-red-100">
+                                <h4 class="font-bold text-red-700 mb-2"><i class="fa-solid fa-triangle-exclamation me-2"></i>SQL Injection</h4>
+                                <p class="text-sm text-red-600">Es la vulnerabilidad más común donde un atacante interfiere con las consultas que una aplicación hace a su base de datos.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            'evaluacion': {
+                title: "Conclusiones y Evaluación",
+                subtitle: "Cierre de Tutoría",
+                icon: "fa-solid fa-clipboard-check",
+                color: "text-slate-800",
+                html: `
+                    <div class="bg-white p-8 rounded-xl shadow-sm border border-slate-200 fade-in">
+                        <h3 class="text-xl font-bold mb-4">Validación de Conocimientos</h3>
+                        <p class="mb-6 text-slate-600">Responde el siguiente cuestionario para aprobar el módulo.</p>
 
-        // ------------------------------------------------------------------
-        // CONFIGURACIÓN DEL BACKEND
-        // ------------------------------------------------------------------
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwRGMmOkIYXjhMGe29fhWS1cL7VG7LmARrHgowGTOtTLWi9BsiWJT8XSVEpGOd_Xu-NDw/exec"; 
-        // ------------------------------------------------------------------
+                        <!-- FORMULARIO DE QUIZ -->
+                        <form id="quizForm" class="space-y-6">
+                            
+                            <!-- Pregunta 1 -->
+                            <div class="p-4 bg-slate-50 rounded-lg">
+                                <p class="font-semibold mb-3">1. ¿Qué característica define mejor a una base de datos Relacional?</p>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="q1" value="a" class="accent-blue-600">
+                                        <span class="text-sm">Uso de documentos JSON</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="q1" value="b" class="accent-blue-600">
+                                        <span class="text-sm">Organización en tablas con filas y columnas</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="q1" value="c" class="accent-blue-600">
+                                        <span class="text-sm">No tener esquema fijo</span>
+                                    </label>
+                                </div>
+                            </div>
 
-        // Variables Globales
-        let selectedFile = null;
-        let isUploading = false;
+                            <!-- Pregunta 2 -->
+                            <div class="p-4 bg-slate-50 rounded-lg">
+                                <p class="font-semibold mb-3">2. ¿Cuál es el objetivo principal de la Normalización?</p>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="q2" value="a" class="accent-blue-600">
+                                        <span class="text-sm">Hacer la base de datos más grande</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="q2" value="b" class="accent-blue-600">
+                                        <span class="text-sm">Reducir la redundancia de datos</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="q2" value="c" class="accent-blue-600">
+                                        <span class="text-sm">Encriptar las contraseñas</span>
+                                    </label>
+                                </div>
+                            </div>
 
-        // Referencias al DOM (Elementos HTML)
-        const dropZone = document.getElementById('drop-zone');
-        const fileInput = document.getElementById('fileInput');
-        const emptyState = document.getElementById('empty-state');
-        const fileState = document.getElementById('file-state');
-        const filenameDisplay = document.getElementById('filename-display');
-        const filesizeDisplay = document.getElementById('filesize-display');
-        const removeFileBtn = document.getElementById('remove-file-btn');
-        const messageArea = document.getElementById('message-area');
-        const messageText = document.getElementById('message-text');
-        const uploadBtn = document.getElementById('upload-btn');
-        const btnText = document.getElementById('btn-text');
-        const btnLoader = document.getElementById('btn-loader');
-        const progressContainer = document.getElementById('progress-container');
-        const progressBar = document.getElementById('progress-bar');
-        const uploadView = document.getElementById('upload-view');
-        const successView = document.getElementById('success-view');
-        const resetBtn = document.getElementById('reset-btn');
+                            <!-- Pregunta 3 -->
+                            <div class="p-4 bg-slate-50 rounded-lg">
+                                <p class="font-semibold mb-3">3. MySQL y PostgreSQL son ejemplos de:</p>
+                                <div class="space-y-2">
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="q3" value="a" class="accent-blue-600">
+                                        <span class="text-sm">Software de Paga</span>
+                                    </label>
+                                    <label class="flex items-center gap-2 cursor-pointer">
+                                        <input type="radio" name="q3" value="b" class="accent-blue-600">
+                                        <span class="text-sm">Software Libre (Open Source)</span>
+                                    </label>
+                                </div>
+                            </div>
 
-        // --- Funciones de Utilidad ---
+                            <button type="button" onclick="submitQuiz()" class="bg-blue-600 text-white px-6 py-2 rounded shadow hover:bg-blue-700 transition-colors w-full md:w-auto font-semibold">
+                                Enviar Respuestas
+                            </button>
+                        </form>
 
-        function validateFileName(name) {
-            // Eliminar .pdf y verificar formato APELLIDO_NOMBRE (Solo mayúsculas)
-            const nameWithoutExt = name.replace('.pdf', '');
-            const regex = /^[A-ZÑ]+_[A-ZÑ]+$/;
-            return regex.test(nameWithoutExt);
+                        <!-- RESULTADO (Oculto por defecto) -->
+                        <div id="quizResult" class="hidden mt-6 p-4 rounded-lg text-center border-2">
+                            <div id="resultIcon" class="text-4xl mb-2"></div>
+                            <h4 id="resultTitle" class="text-xl font-bold"></h4>
+                            <p id="resultMessage" class="text-sm"></p>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        // Función Principal para Cargar Contenido
+        function loadContent(topicId) {
+            const container = document.getElementById('content-area');
+            const data = courseData[topicId];
+
+            if(!data) return;
+
+            // 1. Actualizar el área visual
+            // NOTA: Construimos el encabezado del tema y luego inyectamos el HTML específico del tema.
+            container.innerHTML = `
+                <div class="mb-8 fade-in">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="p-3 bg-white rounded-lg shadow-sm ${data.color}">
+                            <i class="fa-solid ${data.icon} text-2xl"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-3xl font-bold text-slate-800">${data.title}</h2>
+                            <p class="text-slate-500 font-medium">${data.subtitle}</p>
+                        </div>
+                    </div>
+                    <div class="h-1 w-full bg-slate-200 rounded mt-4">
+                        <div class="h-1 bg-blue-500 rounded" style="width: 15%"></div> 
+                        <!-- NOTA: En una app real, este width sería dinámico según el progreso -->
+                    </div>
+                </div>
+                ${data.html}
+            `;
+
+            // 2. Actualizar estilos del menú (Active State)
+            document.querySelectorAll('.nav-item').forEach(btn => {
+                btn.classList.remove('active-nav');
+                // Restaurar estilos base
+                btn.classList.add('text-slate-300');
+            });
+            
+            const activeBtn = document.getElementById(`btn-${topicId}`);
+            if(activeBtn) {
+                activeBtn.classList.add('active-nav');
+                activeBtn.classList.remove('text-slate-300');
+            }
         }
 
-        function showMessage(msg, type) {
-            messageArea.classList.remove('hidden');
-            messageText.innerText = msg;
-            
-            // Reset de clases
-            messageArea.className = 'mt-4 p-3 rounded-lg flex items-start gap-3 text-sm border transition-all';
-            
-            if (type === 'error') {
-                messageArea.classList.add('bg-red-500/10', 'border-red-500/20', 'text-red-200');
-            } else if (type === 'warning') {
-                messageArea.classList.add('bg-yellow-500/10', 'border-yellow-500/20', 'text-yellow-200');
-            }
-            lucide.createIcons();
-        }
-
-        function hideMessage() {
-            messageArea.classList.add('hidden');
-        }
-
-        function handleFileSelect(file) {
-            hideMessage();
-            selectedFile = file;
-            
-            // 1. Validar que sea PDF
-            if (file.type !== 'application/pdf') {
-                updateUIState('invalid');
-                showMessage('Error: El archivo debe ser formato PDF estrictamente.', 'error');
-                return;
-            }
-
-            // 2. Validar Nombre
-            if (!validateFileName(file.name)) {
-                updateUIState('invalid');
-                showMessage('Error Crítico: El nombre NO cumple con el formato APELLIDO_NOMBRE.pdf (Todo mayúsculas).', 'error');
-                return;
-            }
-
-            // 3. Validar Tamaño (IMPORTANTE: Bajado a 4MB para seguridad en transmisión)
-            // Base64 aumenta el tamaño en un ~33%. 4MB archivo ~= 5.3MB payload.
-            const MAX_SIZE = 4 * 1024 * 1024; // 4MB
-            if (file.size > MAX_SIZE) {
-                updateUIState('invalid');
-                showMessage('Error: El archivo supera los 4MB. Esto causa errores de conexión con Google.', 'error');
-                return;
-            }
-
-            // Si todo está bien
-            updateUIState('valid');
-        }
-
-        function updateUIState(state) {
-            if (state === 'idle') {
-                // Estado inicial
-                selectedFile = null;
-                fileInput.value = '';
-                emptyState.classList.remove('hidden');
-                fileState.classList.add('hidden');
-                uploadBtn.disabled = true;
-                uploadBtn.className = "w-full mt-6 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all duration-300 bg-slate-700 text-slate-500 cursor-not-allowed";
-                hideMessage();
-                dropZone.classList.remove('bg-slate-700/50', 'border-solid', 'border-blue-500/30', 'border-red-500/30');
-                
-            } else if (state === 'valid') {
-                // Archivo correcto
-                emptyState.classList.add('hidden');
-                fileState.classList.remove('hidden');
-                filenameDisplay.innerText = selectedFile.name;
-                filesizeDisplay.innerText = (selectedFile.size / 1024 / 1024).toFixed(2) + " MB";
-                
-                uploadBtn.disabled = false;
-                uploadBtn.className = "w-full mt-6 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all duration-300 bg-blue-600 hover:bg-blue-500 text-white hover:shadow-blue-500/25 active:scale-[0.98] cursor-pointer";
-                
-                dropZone.classList.add('bg-slate-700/50', 'border-solid', 'border-blue-500/30');
-                dropZone.classList.remove('border-red-500/30');
-
-            } else if (state === 'invalid') {
-                // Archivo incorrecto
-                emptyState.classList.add('hidden');
-                fileState.classList.remove('hidden');
-                filenameDisplay.innerText = selectedFile.name;
-                filesizeDisplay.innerText = (selectedFile.size / 1024 / 1024).toFixed(2) + " MB";
-
-                uploadBtn.disabled = true;
-                uploadBtn.className = "w-full mt-6 py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-2 transition-all duration-300 bg-slate-700 text-slate-500 cursor-not-allowed opacity-50";
-                
-                dropZone.classList.add('bg-red-500/5', 'border-solid', 'border-red-500/30');
-                dropZone.classList.remove('border-blue-500/30');
-            }
-        }
-
-        // --- Event Listeners (Interacciones) ---
-
-        // Clic en zona de arrastre -> Abre selector de archivos
-        dropZone.addEventListener('click', (e) => {
-            if(e.target !== removeFileBtn && !removeFileBtn.contains(e.target)) {
-                fileInput.click();
-            }
-        });
-
-        // Efectos Drag & Drop
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            if (!selectedFile) {
-                dropZone.classList.add('border-blue-400', 'bg-blue-500/10', 'scale-[1.02]');
-            }
-        });
-
-        dropZone.addEventListener('dragleave', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('border-blue-400', 'bg-blue-500/10', 'scale-[1.02]');
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.classList.remove('border-blue-400', 'bg-blue-500/10', 'scale-[1.02]');
-            if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-                handleFileSelect(e.dataTransfer.files[0]);
-            }
-        });
-
-        // Cambio en el input de archivo
-        fileInput.addEventListener('change', (e) => {
-            if (e.target.files && e.target.files[0]) {
-                handleFileSelect(e.target.files[0]);
-            }
-        });
-
-        // Botón "X" para quitar archivo
-        removeFileBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            updateUIState('idle');
-        });
-
-        // LÓGICA DE SUBIDA (IMPORTANTE)
-        uploadBtn.addEventListener('click', () => {
-            if (!selectedFile) return;
-            if (!validateFileName(selectedFile.name)) return;
-            
-            // Protección por si falta configurar el script
-            if (SCRIPT_URL.includes("PEGAR_AQUI")) {
-                alert("Error: Script URL no configurada.");
-                return;
-            }
-
-            // Iniciar UI de carga
-            isUploading = true;
-            uploadBtn.disabled = true;
-            btnText.innerText = "Preparando...";
-            btnLoader.classList.remove('hidden');
-            progressContainer.classList.remove('hidden');
-            progressBar.style.width = '10%';
-
-            // 1. Leer archivo y convertir a Base64
-            const reader = new FileReader();
-            reader.readAsDataURL(selectedFile);
-            
-            reader.onload = function(e) {
-                // Extraer solo la data base64 (quitar "data:application/pdf;base64,")
-                const rawLog = reader.result.split(',')[1]; 
-                
-                const dataSend = { 
-                    data: rawLog, 
-                    name: selectedFile.name, 
-                    type: selectedFile.type 
-                };
-
-                btnText.innerText = "Subiendo a Drive...";
-                progressBar.style.width = '100%';
-
-                // 2. Enviar a Google Apps Script
-                fetch(SCRIPT_URL, { 
-                    method: "POST",
-                    mode: "no-cors", // CAMBIO CRÍTICO: Modo no-cors para evitar errores de lectura de respuesta
-                    headers: {
-                        "Content-Type": "text/plain;charset=utf-8",
-                    },
-                    body: JSON.stringify(dataSend)
-                })
-                .then(response => {
-                    // En modo no-cors, no podemos leer el JSON, pero si la promesa se resuelve,
-                    // significa que el request fue enviado exitosamente.
-                    // Asumimos éxito para garantizar la transición de la UI.
-                    
-                    progressBar.style.width = '100%';
-                    
-                    setTimeout(() => {
-                        uploadView.classList.add('hidden');
-                        successView.classList.remove('hidden');
-                        isUploading = false;
-                        btnLoader.classList.add('hidden');
-                        progressContainer.classList.add('hidden');
-                        progressBar.style.width = '0%';
-                        btnText.innerText = "Enviar Actividad";
-                    }, 500);
-                })
-                .catch(err => {
-                    console.error("Error silencioso:", err);
-                    // Si ocurre un error real de red (Internet caído), reseteamos.
-                    isUploading = false;
-                    uploadBtn.disabled = false;
-                    btnText.innerText = "Enviar Actividad"; 
-                    btnLoader.classList.add('hidden');
-                    progressContainer.classList.add('hidden');
-                });
+        // Lógica del Quiz
+        function submitQuiz() {
+            // Respuestas correctas
+            const answers = {
+                q1: 'b',
+                q2: 'b',
+                q3: 'b'
             };
-        });
 
-        // Botón "Subir otro archivo"
-        resetBtn.addEventListener('click', () => {
-            successView.classList.add('hidden');
-            uploadView.classList.remove('hidden');
-            updateUIState('idle');
-        });
+            let score = 0;
+            const form = document.getElementById('quizForm');
+            const formData = new FormData(form);
+            let total = 3;
+
+            // Verificar respuestas
+            for (let [key, value] of formData.entries()) {
+                if(answers[key] === value) score++;
+            }
+
+            // Mostrar resultado visual
+            const resultDiv = document.getElementById('quizResult');
+            const resultTitle = document.getElementById('resultTitle');
+            const resultMsg = document.getElementById('resultMessage');
+            const resultIcon = document.getElementById('resultIcon');
+
+            resultDiv.classList.remove('hidden', 'bg-green-50', 'border-green-200', 'text-green-800', 'bg-red-50', 'border-red-200', 'text-red-800');
+
+            if(score >= 2) {
+                // APROBADO
+                resultDiv.classList.add('bg-green-50', 'border-green-200', 'text-green-800');
+                resultIcon.innerHTML = '<i class="fa-solid fa-circle-check"></i>';
+                resultTitle.innerText = "¡Aprobado!";
+                resultMsg.innerText = `Has obtenido ${score}/${total}. Has demostrado dominio de los conceptos básicos.`;
+            } else {
+                // REPROBADO
+                resultDiv.classList.add('bg-red-50', 'border-red-200', 'text-red-800');
+                resultIcon.innerHTML = '<i class="fa-solid fa-circle-xmark"></i>';
+                resultTitle.innerText = "Reprobado";
+                resultMsg.innerText = `Has obtenido ${score}/${total}. Te recomendamos repasar los temas anteriores.`;
+            }
+        }
+
+        // Cargar contenido inicial
+        window.onload = () => {
+            loadContent('inicio');
+        };
+
+        // Función para menú móvil
+        function toggleMobileMenu() {
+            const aside = document.querySelector('aside');
+            aside.classList.toggle('hidden');
+            aside.classList.toggle('absolute');
+            aside.classList.toggle('z-40');
+            aside.classList.toggle('h-full');
+        }
 
     </script>
 </body>
